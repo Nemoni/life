@@ -1,0 +1,27 @@
+#include <stdio.h>
+
+#include "person_rbtree.h"
+#include "rbtree.h"
+
+
+
+int main()
+{
+    struct rb_root mytree = RB_ROOT;
+    rbtree_node node = {0};
+                
+    node.key = 2;
+    node.age = 20;
+    rbtree_insert(&mytree, node);
+   
+    node.key = 3;
+    node.age = 30;
+    rbtree_insert(&mytree, node);
+    all_print(&mytree);
+
+    rbtree_delete(&mytree, 2);
+    all_print(&mytree);
+
+    rbtree_delete(&mytree, 3);
+    all_print(&mytree);
+}
