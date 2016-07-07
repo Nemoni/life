@@ -2,7 +2,7 @@
 #define __PERSON_RBTREE__
 #include "rbtree.h"
 
-typedef int Type;
+typedef unsigned int Type;
 
 typedef struct node{
     struct rb_node rb_node;

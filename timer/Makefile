@@ -16,11 +16,11 @@ all:args ${DES_DIR_OBJ}
 #print the args to debug
 .PHONY:args
 args:
+	@echo " "
 	@echo "debug: DIR_SRC:${DIR_SRC}" 
 	@echo "           SRC:${SRC} "
 	@echo "           OBJ:${OBJ} "
 	@echo "   DES_DIR_OBJ:${DES_DIR_OBJ}"
-	@echo " "
 
 ${DES_DIR_OBJ}:${OBJ_DIR}/%.o:${SRC_DIR}/%.c
 	mkdir -p ${OBJ_DIR}
