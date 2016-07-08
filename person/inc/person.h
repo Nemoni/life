@@ -18,5 +18,6 @@ typedef struct {
     unsigned int person_id;
 }TRANS_ARG;
 
+void person();
 
 #endif
