@@ -1,7 +1,8 @@
 INC_DIR=-I ./inc \
 		-I ../inc \
 		-I ../rbtree/inc \
-		-I ../timer/inc
+		-I ../timer/inc \
+		-I ../log/inc
 OBJ_DIR=./obj
 SRC_DIR=.
 

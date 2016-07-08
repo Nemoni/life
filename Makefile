@@ -1,14 +1,15 @@
 INC_DIR=-I ./inc \
-		-I person/inc
+		-I person/inc \
+		-I log/inc
 OBJ_DIR=./obj
 SRC_DIR=.
 TARGET_DIR=./bin
 TARGET=life
-SUBDIRS=person rbtree timer
+SUBDIRS=person rbtree timer log
 LIBS=-lpthread
 
 CC=gcc
-CGLAG=${INC_DIR} -Wall -O0 -g ${LIBS}
+CGLAG=${INC_DIR} -Wall -O0 -g ${LIBS} -lreadline -ltermcap
 
 DIR_SRC:=${wildcard $(SRC_DIR)/*.c}
 SRC:=${notdir $(DIR_SRC)}

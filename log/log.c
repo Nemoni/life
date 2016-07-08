@@ -7,41 +7,9 @@
 #include <readline/history.h>
 #include <stdlib.h>
 
+#include "log.h"
 
 #define __READLINE_DEBUG
-
-//命令结构体
-typedef int (*CmdProcFunc)(void);
-typedef struct{
-    char         *pszCmd;
-    CmdProcFunc  fpCmd;
-}CMD_PROC;
-
-//命令处理函数定义
-#define MOCK_FUNC(funcName) \
-    int funcName(void){printf("  Enter "#funcName"!\n"); return 0;}
-
-MOCK_FUNC(ShowMeInfo);
-MOCK_FUNC(SetLogCtrl);
-MOCK_FUNC(TestBatch);
-MOCK_FUNC(TestEndianOper);
-
-
-//命令表项宏，用于简化书写
-#define CMD_ENTRY(cmdStr, func)     {cmdStr, func}
-#define CMD_ENTRY_END               {NULL,   NULL}
-
-//命令表
-static CMD_PROC gCmdMap[] = {
-    CMD_ENTRY("ShowMeInfo",       ShowMeInfo),
-    CMD_ENTRY("SetLogCtrl",       SetLogCtrl),
-    CMD_ENTRY("TestBatch",        TestBatch),
-    CMD_ENTRY("TestEndian",       TestEndianOper),
-
-    CMD_ENTRY_END
-};
-#define CMD_MAP_NUM     (sizeof(gCmdMap)/sizeof(CMD_PROC)) - 1/*End*/
-
 
 //返回gCmdMap中的CmdStr列(必须为只读字符串)，以供CmdGenerator使用
 static char *GetCmdByIndex(unsigned int dwCmdIndex)
@@ -52,7 +20,7 @@ static char *GetCmdByIndex(unsigned int dwCmdIndex)
 }
 
 //执行命令
-static int ExecCmd(char *pszCmdLine)
+static int ExecCmd(char *pszCmdLine, void *cmdMap)
 {
     if(NULL == pszCmdLine)
         return -1;
@@ -60,12 +28,12 @@ static int ExecCmd(char *pszCmdLine)
     unsigned int dwCmdIndex = 0;
     for(; dwCmdIndex < CMD_MAP_NUM; dwCmdIndex++)
     {
-        if(!strcmp(pszCmdLine, gCmdMap[dwCmdIndex].pszCmd))
+        if(gCmdMap[dwCmdIndex].pszCmd!=NULL && !strcmp(pszCmdLine, gCmdMap[dwCmdIndex].pszCmd))
             break;
     }
     if(CMD_MAP_NUM == dwCmdIndex)
         return -1;
-    gCmdMap[dwCmdIndex].fpCmd(); //调用相应的函数
+    gCmdMap[dwCmdIndex].fpCmd(cmdMap); //调用相应的函数
 
     return 0;
 }
@@ -73,7 +41,6 @@ static int ExecCmd(char *pszCmdLine)
 
 #ifdef __READLINE_DEBUG
 
-static const char * const pszCmdPrompt = "clover>>";
 
 //退出交互式调测器的命令(不区分大小写)
 static const char *pszQuitCmd[] = {"Quit", "Exit", "End", "Bye", "Q", "E", "B"};
@@ -172,24 +139,27 @@ static void InitReadLine(void)
 #endif
 
 
-int main(void)
+int execute_log_func(void *cmdMap)
 {
 #ifndef __READLINE_DEBUG
     printf("Note: Macro __READLINE_DEBUG is Undefined, thus InteractiveCmd is Unavailable!!!\n\n");
 #else
-    printf("Note: Welcome to Interactive Command!\n");
-    printf("      Press 'Quit'/'Exit'/'End'/'Bye'/'Q'/'E'/'B' to quit!\n\n");
+//    printf("Note: Welcome to Interactive Command!\n");
+//    printf("      Press 'Quit'/'Exit'/'End'/'Bye'/'Q'/'E'/'B' to quit!\n\n");
     InitReadLine();
     while(1)
     {//也可加入超时机制以免忘记退出
         char *pszCmdLine = ReadCmdLine();
         if(IsUserQuitCmd(pszCmdLine))
         {
-            free(pszLineRead);
+			if(pszLineRead != NULL){
+            	free(pszLineRead);
+				pszLineRead = NULL;
+			}
             break;
         }
 
-        ExecCmd(pszCmdLine);
+        ExecCmd(pszCmdLine, cmdMap);
     }
 #endif
 

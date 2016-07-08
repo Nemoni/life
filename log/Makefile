@@ -3,7 +3,8 @@ OBJ_DIR=./obj
 SRC_DIR=.
 
 CC=gcc
-CGLAG=${INC_DIR} -Wall -O0 -g  -lreadline -ltermcap
+CGLAG=${INC_DIR} -Wall -O0 -g  
+#-lreadline -ltermcap
 
 DIR_SRC:=${wildcard $(SRC_DIR)/*.c}
 SRC:=${notdir $(DIR_SRC)}
@@ -11,7 +12,9 @@ OBJ:=${patsubst %.c, %.o, $(SRC)}
 DES_DIR_OBJ:=${addprefix $(OBJ_DIR)/, $(OBJ)}
 
 .PHONY:all
-all:args ${DES_DIR_OBJ} target
+all:args ${DES_DIR_OBJ} 
+
+#target
 
 #print the args to debug
 .PHONY:args
@@ -36,4 +39,4 @@ target:
 .PHONY:clean
 clean:
 	rm -rf ${OBJ_DIR}
-	rm ${TARGET}
+#	rm ${TARGET}
