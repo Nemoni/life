@@ -8,8 +8,11 @@
 #include <stdlib.h>
 
 #include "log.h"
+#include "comm_log.h"
 
 #define __READLINE_DEBUG
+
+extern int parse_input_cmd(char *cmd);
 
 //返回gCmdMap中的CmdStr列(必须为只读字符串)，以供CmdGenerator使用
 static char *GetCmdByIndex(unsigned int dwCmdIndex)
@@ -23,13 +26,27 @@ static char *GetCmdByIndex(unsigned int dwCmdIndex)
 static int ExecCmd(char *pszCmdLine, void *cmdMap)
 {
     if(NULL == pszCmdLine)
-        return -1;
+        return -1; 
+	if('\0' == *pszCmdLine){
+		return 0; //if command is NULL do not print error
+	}
 
+	unsigned int cmdLen = 0;
     unsigned int dwCmdIndex = 0;
+
     for(; dwCmdIndex < CMD_MAP_NUM; dwCmdIndex++)
     {
-        if(gCmdMap[dwCmdIndex].pszCmd!=NULL && !strcmp(pszCmdLine, gCmdMap[dwCmdIndex].pszCmd))
-            break;
+		if(gCmdMap[dwCmdIndex].pszCmd!=NULL){
+			cmdLen = strlen(gCmdMap[dwCmdIndex].pszCmd);
+			if(!strncmp(pszCmdLine, gCmdMap[dwCmdIndex].pszCmd, cmdLen)){
+				if (*(pszCmdLine+cmdLen) != ' ' && *(pszCmdLine+cmdLen) != '\0'){
+					continue;
+				}
+				
+				parse_input_cmd(pszCmdLine);
+				break;
+			}
+		}
     }
     if(CMD_MAP_NUM == dwCmdIndex)
         return -1;
@@ -159,7 +176,9 @@ int execute_log_func(void *cmdMap)
             break;
         }
 
-        ExecCmd(pszCmdLine, cmdMap);
+        if (ExecCmd(pszCmdLine, cmdMap) < 0){
+			printf("ERR: can't find command!");
+		}
     }
 #endif
 

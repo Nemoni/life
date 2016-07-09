@@ -15,7 +15,7 @@ extern CMD_PROC gCmdMap[];
 int main()
 {
     pid_t pid = 0;
-printf("main\n");    
+//printf("main\n");    
     pid = fork();
     if (pid < 0){
         printf("error in fork!");
@@ -31,8 +31,8 @@ printf("main\n");
 
 
 	CMD_PROC mainCmdMap[CMD_MAP_NUM] = {
-    	CMD_ENTRY("person",       person_func),
-    	CMD_ENTRY("?",            main_help_func),
+    	CMD_ENTRY("person",       person_func, "enter person directory"),
+    	CMD_ENTRY("?",            main_help_func, "help command"),
     	//CMD_ENTRY("TestBatch",        TestBatch),
     	//CMD_ENTRY("TestEndian",       TestEndianOper),
 

@@ -15,9 +15,11 @@ $RECYCLE.BIN/
 *.msp
 
 #defined by myself
+bin/
 **/bin/
 **/obj/
 *.o
+*.swp
 
 # Windows shortcuts
 *.lnk
