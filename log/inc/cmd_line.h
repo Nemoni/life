@@ -4,7 +4,6 @@
 
 #define MAX_DESC_LEN 40 //length of the command description
 
-//å~Q½ä»¤ç»~Sæ~^~Dä½~S
 typedef int (*CmdProcFunc)(void *);
 typedef struct{
     char         *pszCmd;
@@ -12,7 +11,6 @@ typedef struct{
 	char         description[MAX_DESC_LEN];
 }CMD_PROC;
 
-//å~Q½ä»¤å¤~Dç~P~Få~G½æ~U°å®~Zä¹~I
 //#define MOCK_FUNC(funcName) \
     int funcName(void){printf("  Enter "#funcName"!\n"); return 0;}
 
@@ -22,14 +20,13 @@ typedef struct{
 //MOCK_FUNC(TestEndianOper);
 
 
-//å~Q½ä»¤è¡¨é¡¹å®~Oï¼~Lç~T¨äº~Nç®~@å~L~Vä¹¦å~F~Y
 #define CMD_ENTRY(cmdStr, func, desc)     {cmdStr, func, desc}
 #define CMD_ENTRY_END               {NULL,   NULL, NULL}
 
 //define the max number of callback functions as 20
 #define CMD_MAP_NUM     20  //(sizeof(gCmdMap)/sizeof(CMD_PROC)) - 1/*End*/
 
-//å~Q½ä»¤è¡¨
+// define the command name and callback function and description 
 CMD_PROC gCmdMap[CMD_MAP_NUM];
 /* = {
     CMD_ENTRY("person",       person_func),
@@ -43,6 +40,6 @@ CMD_PROC gCmdMap[CMD_MAP_NUM];
 #define MAX_PROMPT_LEN 20 //the promption length that display before input command
 char pszCmdPrompt[MAX_PROMPT_LEN];
 
-int execute_log_func(void *);
+int execute_cmd_line(void *);
 
 #endif

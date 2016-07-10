@@ -4,7 +4,7 @@
 
 #include "person.h"
 #include "log_person.h"
-#include "log.h"
+#include "cmd_line.h"
 #include "log_main.h"
 
 extern int person_func(void *);
@@ -32,6 +32,7 @@ int main()
 
 	CMD_PROC mainCmdMap[CMD_MAP_NUM] = {
     	CMD_ENTRY("person",       person_func, "enter person directory"),
+    	CMD_ENTRY("set",          main_set_func, "set common log level"),
     	CMD_ENTRY("?",            main_help_func, "help command"),
     	//CMD_ENTRY("TestBatch",        TestBatch),
     	//CMD_ENTRY("TestEndian",       TestEndianOper),
@@ -43,7 +44,7 @@ int main()
 
 	memcpy(pszCmdPrompt, "main>>", sizeof(pszCmdPrompt));
 
-	execute_log_func((void *)mainCmdMap);
+	execute_cmd_line((void *)mainCmdMap);
 
 	while (1){
         

@@ -7,14 +7,49 @@
 #include <readline/history.h>
 #include <stdlib.h>
 
-#include "log.h"
+#include "cmd_line.h"
 #include "comm_log.h"
 
 #define __READLINE_DEBUG
 
-extern int parse_input_cmd(char *cmd);
 
-//返回gCmdMap中的CmdStr列(必须为只读字符串)，以供CmdGenerator使用
+// parse the input command to global varible
+static int parse_input_cmd(char *cmd)
+{
+    char *p = NULL;
+    char *head = NULL;
+    unsigned int arg_len = 0;
+
+    cmd_argc = 0;
+    memset(cmd_argv, 0, sizeof(cmd_argv));
+    p = cmd;
+
+    while (*p != '\0'){
+        if (' ' == *p){
+            p++;
+            continue;
+        }
+        head = p;
+        while (*p!=' ' && *p!='\0'){
+            arg_len++;
+            if (arg_len == MAX_ARG_LEN){
+                return -1;
+            }
+            p++;
+
+        }
+        strncpy(cmd_argv[cmd_argc], head, arg_len);
+        arg_len = 0;
+
+        cmd_argc++;
+        if (cmd_argc == MAX_CMD_ARGC){
+            return -1; // reach the max count of command
+        }
+    }
+
+    return 0;
+}
+
 static char *GetCmdByIndex(unsigned int dwCmdIndex)
 {
     if(dwCmdIndex >=  CMD_MAP_NUM)
@@ -22,7 +57,7 @@ static char *GetCmdByIndex(unsigned int dwCmdIndex)
     return gCmdMap[dwCmdIndex].pszCmd;
 }
 
-//执行命令
+// get the input string and involve the callback function
 static int ExecCmd(char *pszCmdLine, void *cmdMap)
 {
     if(NULL == pszCmdLine)
@@ -50,7 +85,7 @@ static int ExecCmd(char *pszCmdLine, void *cmdMap)
     }
     if(CMD_MAP_NUM == dwCmdIndex)
         return -1;
-    gCmdMap[dwCmdIndex].fpCmd(cmdMap); //调用相应的函数
+    gCmdMap[dwCmdIndex].fpCmd(cmdMap);
 
     return 0;
 }
@@ -59,7 +94,6 @@ static int ExecCmd(char *pszCmdLine, void *cmdMap)
 #ifdef __READLINE_DEBUG
 
 
-//退出交互式调测器的命令(不区分大小写)
 static const char *pszQuitCmd[] = {"Quit", "Exit", "End", "Bye", "Q", "E", "B"};
 static const unsigned char ucQuitCmdNum = sizeof(pszQuitCmd) / sizeof(pszQuitCmd[0]);
 static int IsUserQuitCmd(char *pszCmd)
@@ -74,7 +108,6 @@ static int IsUserQuitCmd(char *pszCmd)
     return 0;
 }
 
-//剔除字符串首尾的空白字符(含空格)
 static char *StripWhite(char *pszOrig)
 {
     if(NULL == pszOrig)
@@ -95,20 +128,19 @@ static char *StripWhite(char *pszOrig)
     return pszStripHead;
 }
 
-static char *pszLineRead = NULL;  //终端输入字符串
-static char *pszStripLine = NULL; //剔除前端空格的输入字符串
+static char *pszLineRead = NULL;  // the string user input
+static char *pszStripLine = NULL; // the string after get rid of the space
 char *ReadCmdLine()
 {
-     //若已分配命令行缓冲区，则将其释放
     if(pszLineRead)
     {
         free(pszLineRead);
         pszLineRead = NULL;
     }
-    //读取用户输入的命令行
+	// get the input string and set prompt as well
     pszLineRead = readline(pszCmdPrompt);
 
-    //剔除命令行首尾的空白字符。若剔除后的命令不为空，则存入历史列表
+	// git rid of the space at head and tail
     pszStripLine = StripWhite(pszLineRead);
     if(pszStripLine && *pszStripLine)
         add_history(pszStripLine);
@@ -125,7 +157,7 @@ static char* CmdGenerator(const char *pszText, int dwState)
         dwTextLen = strlen(pszText);
     }
 
-    //当输入字符串与命令列表中某命令部分匹配时，返回该命令字符串
+	// compare input string pszText with global structure command map
     const char *pszName = NULL;
     while((pszName = GetCmdByIndex(dwListIdx)))
     {
@@ -147,7 +179,7 @@ static char** CmdCompletion (const char *pszText, int dwStart, int dwEnd)
     return pMatches;
 }
 
-//初始化Tab键能补齐的Command函数
+// set this for auto-completion when input tab key
 static void InitReadLine(void)
 {
     rl_attempted_completion_function = CmdCompletion;
@@ -156,7 +188,7 @@ static void InitReadLine(void)
 #endif
 
 
-int execute_log_func(void *cmdMap)
+int execute_cmd_line(void *cmdMap)
 {
 #ifndef __READLINE_DEBUG
     printf("Note: Macro __READLINE_DEBUG is Undefined, thus InteractiveCmd is Unavailable!!!\n\n");
@@ -165,7 +197,7 @@ int execute_log_func(void *cmdMap)
 //    printf("      Press 'Quit'/'Exit'/'End'/'Bye'/'Q'/'E'/'B' to quit!\n\n");
     InitReadLine();
     while(1)
-    {//也可加入超时机制以免忘记退出
+    {
         char *pszCmdLine = ReadCmdLine();
         if(IsUserQuitCmd(pszCmdLine))
         {
@@ -177,7 +209,7 @@ int execute_log_func(void *cmdMap)
         }
 
         if (ExecCmd(pszCmdLine, cmdMap) < 0){
-			printf("ERR: can't find command!");
+			printf("ERR: can't find command!\n");
 		}
     }
 #endif
