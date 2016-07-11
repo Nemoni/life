@@ -1,13 +1,6 @@
 #ifndef __COMM_LOG__
 #define __COMM_LOG__
 
-#define MAX_CMD_ARGC 5 // max number of args
-#define MAX_ARG_LEN  20 // max length of one arg
-
-
-unsigned int cmd_argc; //actual count of args
-char cmd_argv[MAX_CMD_ARGC][MAX_ARG_LEN];
-
 unsigned int comm_level;
 
 #define LEVEL_DEBUG 0x00000001

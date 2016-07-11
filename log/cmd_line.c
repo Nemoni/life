@@ -8,12 +8,9 @@
 #include <stdlib.h>
 
 #include "cmd_line.h"
-#include "comm_log.h"
-
-#define __READLINE_DEBUG
 
 
-// parse the input command to global varible
+// parse the input command to global variable
 static int parse_input_cmd(char *cmd)
 {
     char *p = NULL;
@@ -58,7 +55,7 @@ static char *GetCmdByIndex(unsigned int dwCmdIndex)
 }
 
 // get the input string and involve the callback function
-static int ExecCmd(char *pszCmdLine, void *cmdMap)
+static int ExecCmd(char *pszCmdLine)
 {
     if(NULL == pszCmdLine)
         return -1; 
@@ -85,7 +82,7 @@ static int ExecCmd(char *pszCmdLine, void *cmdMap)
     }
     if(CMD_MAP_NUM == dwCmdIndex)
         return -1;
-    gCmdMap[dwCmdIndex].fpCmd(cmdMap);
+    gCmdMap[dwCmdIndex].fpCmd();
 
     return 0;
 }
@@ -188,7 +185,7 @@ static void InitReadLine(void)
 #endif
 
 
-int execute_cmd_line(void *cmdMap)
+int execute_cmd_line()
 {
 #ifndef __READLINE_DEBUG
     printf("Note: Macro __READLINE_DEBUG is Undefined, thus InteractiveCmd is Unavailable!!!\n\n");
@@ -208,7 +205,7 @@ int execute_cmd_line(void *cmdMap)
             break;
         }
 
-        if (ExecCmd(pszCmdLine, cmdMap) < 0){
+        if (ExecCmd(pszCmdLine) < 0){
 			printf("ERR: can't find command!\n");
 		}
     }

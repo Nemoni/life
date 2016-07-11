@@ -38,14 +38,14 @@ int comm_set_level()
 usage:
 	printf("Syntax: set [set] <level>\n");
 	printf("comm_level = 0x%08x\n", comm_level);
-	printf("	set  :  set the common log level\n"
-		   "	[set]:  mean & nor |\n"    
-		   "	level: \n   \
-		#define LEVEL_DEBUG 0x00000001\n   \
-		#define LEVEL_INFO  0x00000002\n   \
-		#define LEVEL_WARN  0x00000004\n   \
-		#define LEVEL_ERR   0x00000008\n   \
-		#define LEVEL_ALL   0x00000010\n");
+	printf("    set  :  set the common log level\n"
+		   "    [set]:  mean & nor |\n"    
+		   "    level:  \n"
+           "            #define LEVEL_DEBUG 0x00000001 \n"
+           "            #define LEVEL_INFO  0x00000002 \n"
+           "            #define LEVEL_WARN  0x00000004 \n"
+           "            #define LEVEL_ERR   0x00000008 \n"
+           "            #define LEVEL_ALL   0x00000010 \n");
     
     return 0;
 }
@@ -54,15 +54,13 @@ int comm_help_func()
 {
     unsigned int dwCmdIndex = 0;
 
-    printf("\n");
     for(; dwCmdIndex < CMD_MAP_NUM; dwCmdIndex++)
     {
         if(gCmdMap[dwCmdIndex].pszCmd!=NULL && gCmdMap[dwCmdIndex].description!=NULL){
             printf("%-20s  %-s\n", gCmdMap[dwCmdIndex].pszCmd, gCmdMap[dwCmdIndex].description);
         }
     }
-    printf("%-20s  %-s\n", "q", "quit\n");
-    printf("\n");
+    printf("%-20s  %-s\n", "q", "quit");
 
     return 0;
 }

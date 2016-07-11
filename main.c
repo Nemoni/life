@@ -7,8 +7,8 @@
 #include "cmd_line.h"
 #include "log_main.h"
 
-extern int person_func(void *);
-extern int main_help_func(void *);
+extern int person_func();
+extern int main_help_func();
 
 extern CMD_PROC gCmdMap[];
 
@@ -42,9 +42,9 @@ int main()
 	memset(gCmdMap, 0, sizeof(gCmdMap));
 	memcpy(gCmdMap, mainCmdMap, sizeof(gCmdMap));
 
-	memcpy(pszCmdPrompt, "main>>", sizeof(pszCmdPrompt));
+	memcpy(pszCmdPrompt, "main>> ", sizeof(pszCmdPrompt));
 
-	execute_cmd_line((void *)mainCmdMap);
+	execute_cmd_line();
 
 	while (1){
         
