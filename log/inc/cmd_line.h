@@ -12,8 +12,6 @@ typedef struct{
 	char         description[MAX_DESC_LEN];
 }CMD_PROC;
 
-int funcName(void){printf("  Enter "#funcName"!\n"); return 0;}
-
 #define CMD_ENTRY(cmdStr, func, desc)     {cmdStr, func, desc}
 #define CMD_ENTRY_END               {NULL,   NULL, NULL}
 
