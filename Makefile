@@ -6,10 +6,10 @@ SRC_DIR=.
 TARGET_DIR=./bin
 TARGET=life
 SUBDIRS=person rbtree timer log
-LIBS=-lpthread
+LIBS=-lpthread -lreadline -ltermcap
 
 CC=gcc
-CGLAG=${INC_DIR} -Wall -O0 -g ${LIBS} -lreadline -ltermcap
+CGLAG=${INC_DIR} -Wall -O0 -g ${LIBS} 
 
 DIR_SRC:=${wildcard $(SRC_DIR)/*.c}
 SRC:=${notdir $(DIR_SRC)}
