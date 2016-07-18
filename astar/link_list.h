@@ -7,8 +7,8 @@ typedef struct LinkNode{
     SearchNode value;
 }LinkNode;
 
-unsigned int malloc_count_g = 0;
-unsigned int free_count_g = 0;
+unsigned int malloc_count_g;
+unsigned int free_count_g;
     
 int link_list_insert(LinkNode **head, SearchNode value);
 int link_list_delete(LinkNode **head, SearchNode value);

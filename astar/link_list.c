@@ -4,6 +4,9 @@
 
 #include "link_list.h"
 
+extern unsigned int malloc_count_g;
+extern unsigned int free_count_g;
+
 int link_list_insert(LinkNode **head, SearchNode value)
 {
     int val = 0;
@@ -119,7 +122,7 @@ void print_link_list(LinkNode *head)
     }
     printf("NULL\n");
 }
-
+/*
 int main()
 {
     LinkNode *linkList = NULL;
@@ -173,4 +176,4 @@ int main()
     // print 
     print_link_list(linkList);
     printf("malloc count:%d, free count:%d\n", malloc_count_g, free_count_g);
-}
+}*/

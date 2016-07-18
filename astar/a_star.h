@@ -7,6 +7,7 @@ typedef struct SearchNode{
     int fScore;
     int gScore;    
     int hScore;
+	int available;
     struct SearchNode *parent;
 }SearchNode;
 
@@ -14,7 +15,7 @@ typedef struct SearchNode{
 #define HEIGHT 20
 
 #define ESTIMATE_DISTANCE(start, dest) \
-    sqrt(pow(dest.posX - start.posX) + pow(dest.posY - start.posY))
+    sqrt(pow(dest.posX - start.posX, 2) + pow(dest.posY - start.posY, 2))
 
 #define NEIGHBORS_NUM 8
 
