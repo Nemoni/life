@@ -29,10 +29,10 @@ int link_list_insert(LinkNode **head, SearchNode value)
     if (pCurrent == NULL){ //if head is NULL
         *head = pTmp;
         pTmp->next = NULL;
-        printf("head is NULL\n");
+        //printf("head is NULL\n");
         return 0;
     }
-    if (pCurrent->value.fScore > val){ //if head is biger than value, then insert value before head
+    if (pCurrent->value.fScore >= val){ //if head is biger than value, then insert value before head
         pTmp->next = pCurrent;
         *head = pTmp;
         return 0;
@@ -40,10 +40,10 @@ int link_list_insert(LinkNode **head, SearchNode value)
 
     pNext = pCurrent->next;
     while (pCurrent != NULL) {
-        if (pNext == NULL || pNext->value.fScore > value.fScore){
+        if (pNext == NULL || pNext->value.fScore >= val){
             pTmp->next = pNext;
             pCurrent->next = pTmp;
-            break;
+            return 0;
         }
         pCurrent = pNext;
         pNext = pNext->next;
@@ -108,6 +108,43 @@ int link_list_destroy(LinkNode **head)
     }
     *head = NULL;
     return 0;
+}
+
+int link_list_resort(LinkNode **head)
+{
+    LinkNode *tmpHead = NULL;
+    LinkNode *pOld = NULL;
+    LinkNode *pOldNext = NULL;
+    LinkNode *pNew = NULL;
+    LinkNode *pNewNext = NULL;
+
+    pOld = (*head)->next;
+
+    pNew = *head;
+    tmpHead = pNew;
+    pNew->next = NULL;
+    pNewNext = NULL;
+    
+    while (pOld != NULL){
+        pOldNext = pOld->next;
+        if (pOld->value.fScore <= pNew->value.fScore){
+            pOld->next = pNew;
+            pNew = pOld;
+            pNewNext = pNew->next;
+            tmpHead = pNew;
+        }else {
+            while (pNewNext!=NULL && pNewNext->value.fScore<pOld->value.fScore){
+                pNew = pNewNext;
+                pNewNext = pNewNext->next;
+            }
+            pOld->next = pNewNext;
+            pNew->next = pOld;
+            pNew = tmpHead;
+            pNewNext = pNew->next;
+        }
+        pOld = pOldNext;
+    }
+    *head = tmpHead;
 }
 
 void print_link_list(LinkNode *head)

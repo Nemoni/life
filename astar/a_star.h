@@ -15,7 +15,7 @@ typedef struct SearchNode{
 #define HEIGHT 20
 
 #define ESTIMATE_DISTANCE(start, dest) \
-    sqrt(pow(dest.posX - start.posX, 2) + pow(dest.posY - start.posY, 2))
+    sqrt(pow(dest.posX - start.posX, 2) + pow(dest.posY - start.posY, 2))*10
 
 #define NEIGHBORS_NUM 8
 

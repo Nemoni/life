@@ -14,5 +14,7 @@ int link_list_insert(LinkNode **head, SearchNode value);
 int link_list_delete(LinkNode **head, SearchNode value);
 int link_list_search(LinkNode *head, SearchNode **ppValue);
 int link_list_destroy(LinkNode **head);
+void print_link_list(LinkNode *head);
+int link_list_resort(LinkNode **head);
 
 #endif
