@@ -4,8 +4,8 @@
 #define ESTIMATE_DISTANCE(start, dest) \
     sqrt(pow(dest.posX - start.posX, 2) + pow(dest.posY - start.posY, 2))*10
 
-#define WIDTH    20
-#define HEIGHT   20
+#define WIDTH    20 //the width of the map
+#define HEIGHT   20 //the height of the map
 
 typedef struct POSTITION
 {
@@ -15,7 +15,7 @@ typedef struct POSTITION
 
 typedef struct SEARCHNODE
 {
-    struct list_head list;
+    struct list_head list; //kernel link list node
     POSTITION_STRU position;
     int fScore;
     int gScore;    

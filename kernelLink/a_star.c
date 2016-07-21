@@ -8,6 +8,28 @@
 #include "list.h"
 #include "a_star.h"
 
+int map[HEIGHT][WIDTH] = {
+    {0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+    {0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+    {0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+    {0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+    {0,0,0,1,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0},
+    {0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0},
+    {0,0,0,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0},
+    {0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0},
+    {0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0},
+    {0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0},
+    {0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0},
+    {0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0},
+    {0,0,0,0,0,0,0,0,0,0,1,0,0,1,1,1,1,0,0,0},
+    {0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,1,0,0,0},
+    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0},
+    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0},
+    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0},
+    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0},
+    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0},
+    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0}
+};
 
 /*****************************************************************************
  * Function      : create_node
@@ -92,7 +114,7 @@ int compare_fscore(SEARCHNODE_STRU *m, SEARCHNODE_STRU *n)
 }
 /*****************************************************************************
  * Function      : double_list_init
- * Description   : init customer list
+ * Description   : init customer list and make the pointer point to itself
  * Input         : SEARCHNODE_STRU *head  
  * Output        : None
  * Return        : 
@@ -103,7 +125,7 @@ int compare_fscore(SEARCHNODE_STRU *m, SEARCHNODE_STRU *n)
  *   Modification: Created function
 
 *****************************************************************************/
-int double_list_init(SEARCHNODE_STRU *head)
+void double_list_init(SEARCHNODE_STRU *head)
 {    
     memset(&head->position, 0, sizeof(POSTITION_STRU));
     head->gScore = 0;
@@ -114,7 +136,7 @@ int double_list_init(SEARCHNODE_STRU *head)
 }
 /*****************************************************************************
  * Function      : double_list_add
- * Description   : add a given node to the list
+ * Description   : add a given node to the list, not create it
  * Input         : SEARCHNODE_STRU *head  
                 SEARCHNODE_STRU *node  
  * Output        : None
@@ -126,16 +148,42 @@ int double_list_init(SEARCHNODE_STRU *head)
  *   Modification: Created function
 
 *****************************************************************************/
-int double_list_add(SEARCHNODE_STRU *head, SEARCHNODE_STRU *node)
+void double_list_add(SEARCHNODE_STRU *head, SEARCHNODE_STRU *node)
 {
     list_add(&(node->list), &(head->list));
 }
+/*****************************************************************************
+ * Function      : double_list_del
+ * Description   : delete a node from list but not free it
+ * Input         : SEARCHNODE_STRU *node  
+ * Output        : None
+ * Return        : 
+ * Others        : 
+ * Record
+ * 1.Date        : 20160721
+ *   Author      : Nemo Ni
+ *   Modification: Created function
 
-int double_list_del(SEARCHNODE_STRU *node)
+*****************************************************************************/
+void double_list_del(SEARCHNODE_STRU *node)
 {
     list_del_init(&(node->list));
 }
+/*****************************************************************************
+ * Function      : double_list_search
+ * Description   : find a node by it's position in the list and return the node's pointer,
+                   if didn't find return NULL
+ * Input         : SEARCHNODE_STRU *head  
+                SEARCHNODE_STRU *node  
+ * Output        : None
+ * Return        : SEARCHNODE_STRU
+ * Others        : 
+ * Record
+ * 1.Date        : 20160721
+ *   Author      : Nemo Ni
+ *   Modification: Created function
 
+*****************************************************************************/
 SEARCHNODE_STRU *double_list_search(SEARCHNODE_STRU *head, SEARCHNODE_STRU *node)
 {
 	struct list_head *pos;
@@ -149,7 +197,20 @@ SEARCHNODE_STRU *double_list_search(SEARCHNODE_STRU *head, SEARCHNODE_STRU *node
 	}
     return NULL;
 }
+/*****************************************************************************
+ * Function      : get_min_fscore_node
+ * Description   : find the minimum fscore node in the list and return it's
+                   pointer
+ * Input         : SEARCHNODE_STRU *head  
+ * Output        : None
+ * Return        : SEARCHNODE_STRU
+ * Others        : 
+ * Record
+ * 1.Date        : 20160721
+ *   Author      : Nemo Ni
+ *   Modification: Created function
 
+*****************************************************************************/
 SEARCHNODE_STRU *get_min_fscore_node(SEARCHNODE_STRU *head)
 {
 	struct list_head *pos;
@@ -166,11 +227,37 @@ SEARCHNODE_STRU *get_min_fscore_node(SEARCHNODE_STRU *head)
 	}
     return pMinNode;
 }
+/*****************************************************************************
+ * Function      : dist_between
+ * Description   : the actual distance between node A and node B
+ * Input         : SEARCHNODE_STRU *nodeA  
+                SEARCHNODE_STRU *nodeB  
+ * Output        : None
+ * Return        : 
+ * Others        : 
+ * Record
+ * 1.Date        : 20160721
+ *   Author      : Nemo Ni
+ *   Modification: Created function
+
+*****************************************************************************/
 int dist_between(SEARCHNODE_STRU *nodeA, SEARCHNODE_STRU *nodeB)
 {
     return ESTIMATE_DISTANCE(nodeA->position, nodeB->position);
 }
+/*****************************************************************************
+ * Function      : within_map
+ * Description   : check if  the width and height of the node's position is correct
+ * Input         : POSTITION_STRU node  
+ * Output        : None
+ * Return        : 
+ * Others        : 
+ * Record
+ * 1.Date        : 20160721
+ *   Author      : Nemo Ni
+ *   Modification: Created function
 
+*****************************************************************************/
 bool within_map(POSTITION_STRU node)
 {
 	if (node.posX >= 0 && node.posX < WIDTH && node.posY >= 0 && node.posY < HEIGHT){
@@ -179,29 +266,21 @@ bool within_map(POSTITION_STRU node)
 		return false;
 	}
 }
-int map[HEIGHT][WIDTH] = {
-    {0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-    {0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-    {0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-    {0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-    {0,0,0,1,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0},
-    {0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0},
-    {0,0,0,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0,1,0,0,1,1,1,1,0,0,0},
-    {0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,1,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0},
-    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0}
-};
+/*****************************************************************************
+ * Function      : getNeighbors
+ * Description   : get the neighbors of the given node and create it if
+                   it is correct
+ * Input         : SEARCHNODE_STRU *head          
+                SEARCHNODE_STRU *pNodeCurrent  
+ * Output        : None
+ * Return        : 
+ * Others        : 
+ * Record
+ * 1.Date        : 20160721
+ *   Author      : Nemo Ni
+ *   Modification: Created function
 
+*****************************************************************************/
 void getNeighbors(SEARCHNODE_STRU *head, SEARCHNODE_STRU *pNodeCurrent)
 {
 	int i = -1, j = -1;
@@ -223,6 +302,21 @@ void getNeighbors(SEARCHNODE_STRU *head, SEARCHNODE_STRU *pNodeCurrent)
 		}
     }
 }
+/*****************************************************************************
+ * Function      : on_the_path
+ * Description   : check if the node is on the path that find out finally
+ * Input         : SEARCHNODE_STRU *pStart  
+                SEARCHNODE_STRU *pDest   
+                POSTITION_STRU node      
+ * Output        : None
+ * Return        : 
+ * Others        : 
+ * Record
+ * 1.Date        : 20160721
+ *   Author      : Nemo Ni
+ *   Modification: Created function
+
+*****************************************************************************/
 int on_the_path(SEARCHNODE_STRU *pStart, SEARCHNODE_STRU *pDest, POSTITION_STRU node)
 {
     SEARCHNODE_STRU *pCurrent = pDest;
@@ -237,6 +331,28 @@ int on_the_path(SEARCHNODE_STRU *pStart, SEARCHNODE_STRU *pDest, POSTITION_STRU 
         pCurrent = pCurrent->parent;
     }
 	return -1;
+}
+
+void print_map()
+{
+    int i = 0, j = 0;
+    printf(" \\");
+    
+    for (i=0; i< WIDTH; i++){
+        printf("%2d", i);
+    }
+    printf("\n");
+    for (j=0; j< HEIGHT; j++){
+        printf("%2d", j);
+        for (i=0; i< WIDTH; i++){
+            if (map[j][i] == 1){
+                printf(" &");
+            }else {
+                printf(" -");
+            }
+        }
+        printf("\n");
+    }
 }
 
 void print_path(SEARCHNODE_STRU *pStart, SEARCHNODE_STRU *pDest)
@@ -254,14 +370,12 @@ void print_path(SEARCHNODE_STRU *pStart, SEARCHNODE_STRU *pDest)
         for (i=0; i< WIDTH; i++){
             node.posX = i;
             node.posY = j;
-            if (on_the_path(pStart, pDest, node) == 0){
-                if (compare_position(pStart->position, node) == 0){
-                    printf(" #");
-                }else if (compare_position(pDest->position, node) == 0){
-                    printf(" @");
-                }else{
-                    printf(" +");
-                }
+            if (compare_position(pStart->position, node) == 0){
+                printf(" #");
+            }else if (compare_position(pDest->position, node) == 0){
+                printf(" @");
+            }else if (on_the_path(pStart, pDest, node) == 0){
+                printf(" +");
             }else{
                 if (map[j][i] == 1){
                     printf(" &");
@@ -272,17 +386,14 @@ void print_path(SEARCHNODE_STRU *pStart, SEARCHNODE_STRU *pDest)
         }
         printf("\n");
     }
-
     
 //	    SEARCHNODE_STRU *pCurrent = pDest;
 //	    while (compare_position(pStart->position, pCurrent->position) != 0){
 //	          printf("(%d,%d)%d,%d,%d->", pCurrent->position.posX,pCurrent->position.posY
 //	              ,pCurrent->fScore,pCurrent->gScore,pCurrent->hScore);
-//	//	        if (compare_position(node, pCurrent->position) == 0){
-//	//	            return 0;
-//	//	        }
 //	        pCurrent = pCurrent->parent;
 //	    }
+
 }
 /*****************************************************************************
  * Function      : a_star_func
@@ -301,9 +412,7 @@ void print_path(SEARCHNODE_STRU *pStart, SEARCHNODE_STRU *pDest)
 *****************************************************************************/
 int a_star_func(POSTITION_STRU start, POSTITION_STRU dest)
 {
-    SEARCHNODE_STRU openList;
-    SEARCHNODE_STRU closeList;
-    SEARCHNODE_STRU neighborList;
+    SEARCHNODE_STRU openList, closeList, neighborList;
     
     SEARCHNODE_STRU *pOpenList = &openList;
     SEARCHNODE_STRU *pCloseList = &closeList;
@@ -313,9 +422,7 @@ int a_star_func(POSTITION_STRU start, POSTITION_STRU dest)
     int GScoreStart, HScoreStart, FScoreStart;
     int tentativeGScore;
 
-    SEARCHNODE_STRU *pNodeCurrent = NULL;
-    SEARCHNODE_STRU *pNodeNeighbor = NULL;
-    SEARCHNODE_STRU *pNodeSearch = NULL;
+    SEARCHNODE_STRU *pNodeCurrent = NULL, *pNodeNeighbor = NULL, *pNodeSearch = NULL;
     
     double_list_init(pOpenList);
     double_list_init(pCloseList);
@@ -330,30 +437,29 @@ int a_star_func(POSTITION_STRU start, POSTITION_STRU dest)
     while (pOpenList->list.next != &pOpenList->list){
         pNodeCurrent = get_min_fscore_node(pOpenList);
         if (compare_position(pNodeCurrent->position, dest) == 0){
-            print_path(pStart, pNodeCurrent);
+            print_path(pStart, pNodeCurrent); //arrive at the destination
             return 0;
         }
         double_list_del(pNodeCurrent);
         double_list_add(pCloseList, pNodeCurrent);
         getNeighbors(pNeighborList, pNodeCurrent);
-        /* foreach the current node's 8 neighbor nodes */
+        /* foreach the current node's neighbor nodes */
         while (pNeighborList->list.next != &pNeighborList->list){
-    	
     		pNodeNeighbor = list_entry(pNeighborList->list.next, SEARCHNODE_STRU, list);
-            /* if this neighbor node has been calculated */
+            /* if this neighbor node has been calculated then skip */
             if ((pNodeSearch = double_list_search(pCloseList, pNodeNeighbor)) != NULL){
                 double_list_del(pNodeNeighbor);
                 free(pNodeNeighbor);
                 continue;
             }
-            /* calculate the distance between this neighbor node and start */
+            /* calculate the distance between this neighbor node and start node */
             tentativeGScore = pNodeCurrent->gScore + dist_between(pNodeNeighbor, pNodeCurrent);
             /* if this neighbor node is in open set list */
             if ((pNodeSearch = double_list_search(pOpenList, pNodeNeighbor)) != NULL){
                 double_list_del(pNodeNeighbor);
                 free(pNodeNeighbor);
                 pNodeNeighbor = pNodeSearch;
-                /* if node is in open set list and the cost is more than before */
+                /* if node is in open set list and the cost is more than before then skip */
                 if (tentativeGScore >= pNodeNeighbor->gScore){
                     continue;
                 }
@@ -373,86 +479,25 @@ int a_star_func(POSTITION_STRU start, POSTITION_STRU dest)
 
 int main()
 {
-    SEARCHNODE_STRU startNode, destNode;
+    POSTITION_STRU startNode, destNode;
     
-	memset(&startNode.position, 0, sizeof(POSTITION_STRU));
-	memset(&destNode.position, 0, sizeof(POSTITION_STRU));
-	startNode.position.posX = -1;
-	startNode.position.posY = -1;
-	destNode.position.posX = -1;
-	destNode.position.posY = -1;
+	startNode.posX = -1;
+	startNode.posY = -1;
+	destNode.posX = -1;
+	destNode.posY = -1;
     
     //init_map();
-    print_path(&startNode, &destNode);
-    while (scanf("%d %d %d %d", &startNode.position.posX, &startNode.position.posY, &destNode.position.posX, &destNode.position.posY) != EOF)
+    print_map();
+    while (scanf("%d %d %d %d", &startNode.posX, &startNode.posY, &destNode.posX, &destNode.posY) != EOF)
     {
-        if (within_map(startNode.position) && within_map(destNode.position)){
-            if (a_star_func(startNode.position, destNode.position) < 0){
+        if (within_map(startNode) && within_map(destNode)){
+            if (a_star_func(startNode, destNode) < 0){
         		printf("no path!\n");
             }
         }else{
             printf("error input!\n");
         }
     }
+    return 0;
 }
-/*
-struct node 
-{
-	struct list_head list;
-	int num;
-};
-int main() 
-{
-	int i;                     //临时变量
-	struct node *tem;
-	struct list_head *pos, *n;
-
-	struct node mylist;       //链表
-	INIT_LIST_HEAD(&mylist);  //动态链表初始化
-
-	//插入0~9共10个元素
-	for (i = 0; i < 10; i++)
-	{
-		tem = (struct node*) malloc(sizeof(struct node));
-		tem->num = i;
-		list_add(&(tem->list), &(mylist.list));
-	}
-
-	//打印链表
-	list_for_each(pos, &mylist.list)
-	{
-		tem = list_entry(pos, struct node, list);
-		printf("%d ", tem->num);
-	}
-	printf("\n");
-	
-	//删除所有值为5的节点，使用safe版本遍历
-	list_for_each_safe(pos, n, &mylist.list)
-	{
-		tem = list_entry(pos, struct node, list);
-		if (tem->num == 5)
-		{
-			list_del_init(pos);
-			free(tem);
-		}
-	}
-
-	//打印链表
-	list_for_each(pos, &mylist.list)
-	{
-		tem = list_entry(pos, struct node, list);
-		printf("%d ", tem->num);
-	}
-	printf("\n");
-
-	//释放链表元素
-	list_for_each_safe(pos, n, &mylist.list)
-	{
-		tem = list_entry(pos, struct node, list);
-		list_del_init(pos);
-		free(tem);
-	}
-
-	return 0;
-}*/
 
