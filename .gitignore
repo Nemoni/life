@@ -21,6 +21,7 @@ bin/
 *.o
 *.swp
 *.out
+target
 
 # Windows shortcuts
 *.lnk
